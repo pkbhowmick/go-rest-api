@@ -75,6 +75,27 @@ func CreateUser(res http.ResponseWriter, req *http.Request)  {
 
 func UpdateUser(res http.ResponseWriter, req *http.Request)  {
 	res.Header().Set("Content-Type","application/json")
+	params := mux.Vars(req)
+	id := params["id"]
+	var newUser, oldUser model.User
+	oldUser, ok := users[id]
+	if !ok {
+		http.Error(res, "User doesn't exist", http.StatusNotFound)
+		return
+	}
+	err := json.NewDecoder(req.Body).Decode(&newUser)
+	if err!=nil{
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	oldUser.FirstName = newUser.FirstName
+	oldUser.LastName = newUser.LastName
+	users[id] = oldUser
+	err = json.NewEncoder(res).Encode(&oldUser)
+	if err!=nil{
+		http.Error(res, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func DeleteUser(res http.ResponseWriter, req *http.Request)  {
