@@ -13,6 +13,81 @@ var users map[string]model.User
 
 func initializeDB()  {
 	users = make(map[string]model.User)
+	users["1"] = model.User{
+		"1",
+		"Pulak",
+		"Kanti",
+		[]model.Repository{
+			{
+				"1",
+				"go-rest-api",
+				"public",
+				1,
+				time.Now(),
+			},
+		},
+		time.Now(),
+	}
+	users["2"] = model.User{
+		"2",
+		"Mehedi",
+		"Hasan",
+		[]model.Repository{
+			{
+				"1",
+				"go-api-server",
+				"public",
+				2,
+				time.Now(),
+			},
+		},
+		time.Now(),
+	}
+	users["3"] = model.User{
+		"3",
+		"Prangon",
+		"Majumdar",
+		[]model.Repository{
+			{
+				"1",
+				"go-http-api-server",
+				"private",
+				3,
+				time.Now(),
+			},
+		},
+		time.Now(),
+	}
+	users["4"] = model.User{
+		"4",
+		"Sakib",
+		"Alamin",
+		[]model.Repository{
+			{
+				"1",
+				"go-httpapi-server",
+				"private",
+				5,
+				time.Now(),
+			},
+		},
+		time.Now(),
+	}
+	users["5"] = model.User{
+		"5",
+		"Sahadat",
+		"Sahin",
+		[]model.Repository{
+			{
+				"1",
+				"go-http-server",
+				"public",
+				5,
+				time.Now(),
+			},
+		},
+		time.Now(),
+	}
 }
 
 func userToArray() []model.User{
