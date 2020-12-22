@@ -100,6 +100,17 @@ func UpdateUser(res http.ResponseWriter, req *http.Request)  {
 
 func DeleteUser(res http.ResponseWriter, req *http.Request)  {
 	res.Header().Set("Content-Type","application/json")
+	params := mux.Vars(req)
+	id := params["id"]
+	if user, ok := users[id]; ok {
+		delete(users, id)
+		err := json.NewEncoder(res).Encode(&user)
+		if err!=nil{
+			http.Error(res, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	http.Error(res, "User doesn't exist", http.StatusNotFound)
 }
 
 func Homepage(res http.ResponseWriter, req *http.Request)  {
