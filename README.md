@@ -11,3 +11,7 @@
 
 ```$ go-rest-api start```
 
+## Command to run unit test for API endpoints
+```$ cd api```
+
+```$ go test```
