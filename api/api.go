@@ -123,6 +123,11 @@ func GetUser(res http.ResponseWriter, req *http.Request)  {
 }
 
 func CreateUser(res http.ResponseWriter, req *http.Request)  {
+	contentType := req.Header.Get("Content-Type")
+	if contentType != "" && contentType != "application/json" {
+		http.Error(res, "Content-Type header is not application/json",http.StatusUnsupportedMediaType)
+		return
+	}
 	res.Header().Set("Content-Type","application/json")
 	var user model.User
 	err := json.NewDecoder(req.Body).Decode(&user)
@@ -150,6 +155,11 @@ func CreateUser(res http.ResponseWriter, req *http.Request)  {
 }
 
 func UpdateUser(res http.ResponseWriter, req *http.Request)  {
+	contentType := req.Header.Get("Content-Type")
+	if contentType != "" && contentType != "application/json" {
+		http.Error(res, "Content-Type header is not application/json",http.StatusUnsupportedMediaType)
+		return
+	}
 	res.Header().Set("Content-Type","application/json")
 	params := mux.Vars(req)
 	id := params["id"]
