@@ -19,7 +19,7 @@ func initializeDB()  {
 		"Kanti",
 		[]model.Repository{
 			{
-				"1",
+				"1001",
 				"go-rest-api",
 				"public",
 				1,
@@ -34,7 +34,7 @@ func initializeDB()  {
 		"Hasan",
 		[]model.Repository{
 			{
-				"1",
+				"1002",
 				"go-api-server",
 				"public",
 				2,
@@ -49,7 +49,7 @@ func initializeDB()  {
 		"Majumdar",
 		[]model.Repository{
 			{
-				"1",
+				"1003",
 				"go-http-api-server",
 				"private",
 				3,
@@ -64,7 +64,7 @@ func initializeDB()  {
 		"Alamin",
 		[]model.Repository{
 			{
-				"1",
+				"1004",
 				"go-httpapi-server",
 				"private",
 				5,
@@ -79,7 +79,7 @@ func initializeDB()  {
 		"Sahin",
 		[]model.Repository{
 			{
-				"1",
+				"1005",
 				"go-http-server",
 				"public",
 				5,
@@ -139,6 +139,7 @@ func CreateUser(res http.ResponseWriter, req *http.Request)  {
 		return
 	}
 	user.CreatedAt = time.Now()
+	user.Repositories = make([]model.Repository,0)
 	users[user.ID] = user
 	res.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(res).Encode(&user)
@@ -165,6 +166,7 @@ func UpdateUser(res http.ResponseWriter, req *http.Request)  {
 	}
 	oldUser.FirstName = newUser.FirstName
 	oldUser.LastName = newUser.LastName
+	oldUser.Repositories = newUser.Repositories
 	users[id] = oldUser
 	err = json.NewEncoder(res).Encode(&oldUser)
 	if err!=nil{
