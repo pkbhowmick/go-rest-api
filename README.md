@@ -45,6 +45,6 @@ type Repository struct {
 |---|---|---|
 |GET| /api/users | Return a list of all users in response| 
 |GET| /api/users/{id} | Return the data of given user id in response| 
-|POST| /api/users | Add an user in the database and return the adder user data in response | 
+|POST| /api/users | Add an user in the database and return the added user data in response | 
 |PUT| /api/users/{id} | Update the user and return the updated user info in response| 
 |DELETE| /api/users/{id} | Delete the user and return the deleted user data in response| 
