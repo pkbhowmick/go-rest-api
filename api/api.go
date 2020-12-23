@@ -11,7 +11,7 @@ import (
 
 var users map[string]model.User
 
-func initializeDB()  {
+func InitializeDB()  {
 	users = make(map[string]model.User)
 	users["1"] = model.User{
 		"1",
@@ -119,7 +119,8 @@ func GetUser(res http.ResponseWriter, req *http.Request)  {
 		}
 		return
 	}
-	http.Error(res, "User doesn't exist", http.StatusNotFound)
+	errMsg := "User with id "+id+" doesn't exist"
+	http.Error(res, errMsg, http.StatusNotFound)
 }
 
 func CreateUser(res http.ResponseWriter, req *http.Request)  {
@@ -171,12 +172,11 @@ func UpdateUser(res http.ResponseWriter, req *http.Request)  {
 	}
 	err := json.NewDecoder(req.Body).Decode(&newUser)
 	if err!=nil{
-		http.Error(res, err.Error(), http.StatusInternalServerError)
+		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
 	oldUser.FirstName = newUser.FirstName
 	oldUser.LastName = newUser.LastName
-	oldUser.Repositories = newUser.Repositories
 	users[id] = oldUser
 	err = json.NewEncoder(res).Encode(&oldUser)
 	if err!=nil{
@@ -206,7 +206,7 @@ func Homepage(res http.ResponseWriter, req *http.Request)  {
 }
 
 func StartServer()  {
-	initializeDB()
+	InitializeDB()
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/",Homepage).Methods("GET")
