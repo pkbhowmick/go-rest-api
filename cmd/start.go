@@ -5,14 +5,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func init()  {
+func init() {
 	rootCmd.AddCommand(startCmd)
 }
 
 var startCmd = &cobra.Command{
-	Use: "start",
+	Use:   "start",
 	Short: "This command will start the api server",
-	Long: "This command will start the go-rest-api server",
+	Long:  "This command will start the go-rest-api server",
 	Run: func(cmd *cobra.Command, args []string) {
 		api.StartServer()
 	},

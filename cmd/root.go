@@ -1,4 +1,5 @@
 package cmd
+
 import (
 	"fmt"
 	"github.com/spf13/cobra"
@@ -6,16 +7,16 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use: ".",
+	Use:   ".",
 	Short: "This is the main command",
-	Long: `This is the main command of go-rest-api server`,
+	Long:  `This is the main command of go-rest-api server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Cli works")
 	},
 }
 
-func Execute()  {
-	if err := rootCmd.Execute(); err!= nil{
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

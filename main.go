@@ -2,6 +2,6 @@ package main
 
 import "github.com/pkbhowmick/go-rest-api/cmd"
 
-func main()  {
+func main() {
 	cmd.Execute()
 }

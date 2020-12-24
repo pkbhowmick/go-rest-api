@@ -2,27 +2,28 @@ package api
 
 import (
 	"bytes"
-	"github.com/gorilla/mux"
-	"github.com/magiconair/properties/assert"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gorilla/mux"
+	"github.com/magiconair/properties/assert"
 )
 
 type Test struct {
-	Method string
-	Url string
-	Body io.Reader
+	Method             string
+	Url                string
+	Body               io.Reader
 	ExpectedStatusCode int
 }
 
 type TestWithID struct {
-	Method string
-	Url string
-	Body io.Reader
+	Method             string
+	Url                string
+	Body               io.Reader
 	ExpectedStatusCode int
-	UserID string
+	UserID             string
 }
 
 func TestCreateUser(t *testing.T) {
@@ -41,14 +42,14 @@ func TestCreateUser(t *testing.T) {
 			400,
 		},
 	}
-	for _ , test := range tests {
-		req, err := http.NewRequest(test.Method,test.Url, test.Body)
-		if err!= nil{
+	for _, test := range tests {
+		req, err := http.NewRequest(test.Method, test.Url, test.Body)
+		if err != nil {
 			t.Fatal(err)
 		}
 		res := httptest.NewRecorder()
 		handler := http.HandlerFunc(CreateUser)
-		handler.ServeHTTP(res,req)
+		handler.ServeHTTP(res, req)
 		assert.Equal(t, res.Result().StatusCode, test.ExpectedStatusCode)
 	}
 }
@@ -56,20 +57,20 @@ func TestCreateUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	InitializeDB()
 	tests := []TestWithID{
-		{"DELETE","/api/users",nil,200,"1"},
-		{"DELETE", "/api/users", nil,404, "6"},
+		{"DELETE", "/api/users", nil, 200, "1"},
+		{"DELETE", "/api/users", nil, 404, "6"},
 	}
-	for _ , test := range tests {
-		req, err := http.NewRequest(test.Method,test.Url, test.Body)
+	for _, test := range tests {
+		req, err := http.NewRequest(test.Method, test.Url, test.Body)
 		params := make(map[string]string)
-		params["id"]=test.UserID
-		req = mux.SetURLVars(req,params)
-		if err!= nil{
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
+		if err != nil {
 			t.Fatal(err)
 		}
 		res := httptest.NewRecorder()
 		handler := http.HandlerFunc(DeleteUser)
-		handler.ServeHTTP(res,req)
+		handler.ServeHTTP(res, req)
 		assert.Equal(t, res.Result().StatusCode, test.ExpectedStatusCode)
 	}
 }
@@ -77,20 +78,20 @@ func TestDeleteUser(t *testing.T) {
 func TestGetUser(t *testing.T) {
 	InitializeDB()
 	tests := []TestWithID{
-		{"GET","/api/users",nil,200,"1"},
-		{"GET", "/api/users", nil,404, "8"},
+		{"GET", "/api/users", nil, 200, "1"},
+		{"GET", "/api/users", nil, 404, "8"},
 	}
-	for _ , test := range tests {
-		req, err := http.NewRequest(test.Method,test.Url, test.Body)
+	for _, test := range tests {
+		req, err := http.NewRequest(test.Method, test.Url, test.Body)
 		params := make(map[string]string)
-		params["id"]=test.UserID
-		req = mux.SetURLVars(req,params)
-		if err!= nil{
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
+		if err != nil {
 			t.Fatal(err)
 		}
 		res := httptest.NewRecorder()
 		handler := http.HandlerFunc(GetUser)
-		handler.ServeHTTP(res,req)
+		handler.ServeHTTP(res, req)
 		assert.Equal(t, res.Result().StatusCode, test.ExpectedStatusCode)
 	}
 }
@@ -98,17 +99,17 @@ func TestGetUser(t *testing.T) {
 func TestGetUsers(t *testing.T) {
 	InitializeDB()
 	tests := []Test{
-		{"GET","/api/users",nil,200},
-		{"GET", "/api/users/", nil,200},
+		{"GET", "/api/users", nil, 200},
+		{"GET", "/api/users/", nil, 200},
 	}
-	for _ , test := range tests {
-		req, err := http.NewRequest(test.Method,test.Url, test.Body)
-		if err!= nil{
+	for _, test := range tests {
+		req, err := http.NewRequest(test.Method, test.Url, test.Body)
+		if err != nil {
 			t.Fatal(err)
 		}
 		res := httptest.NewRecorder()
 		handler := http.HandlerFunc(GetUsers)
-		handler.ServeHTTP(res,req)
+		handler.ServeHTTP(res, req)
 		assert.Equal(t, res.Result().StatusCode, test.ExpectedStatusCode)
 	}
 }
@@ -139,18 +140,17 @@ func TestUpdateUser(t *testing.T) {
 		},
 	}
 
-
-	for _ , test := range tests {
-		req, err := http.NewRequest(test.Method,test.Url, test.Body)
+	for _, test := range tests {
+		req, err := http.NewRequest(test.Method, test.Url, test.Body)
 		params := make(map[string]string)
-		params["id"]=test.UserID
-		req = mux.SetURLVars(req,params)
-		if err!= nil{
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
+		if err != nil {
 			t.Fatal(err)
 		}
 		res := httptest.NewRecorder()
 		handler := http.HandlerFunc(UpdateUser)
-		handler.ServeHTTP(res,req)
+		handler.ServeHTTP(res, req)
 		assert.Equal(t, res.Result().StatusCode, test.ExpectedStatusCode)
 	}
 }
