@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func BasicAuth(next http.HandlerFunc) http.HandlerFunc {
@@ -35,4 +37,17 @@ func BasicAuth(next http.HandlerFunc) http.HandlerFunc {
 		}
 		next.ServeHTTP(res, req)
 	}
+}
+
+func GenerateToken(username string) (string, error) {
+	signingKey := []byte(os.Getenv("SIGNING_KEY"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"Username":  username,
+		"ExpiresAt": 3600,
+	})
+	signedToken, err := token.SignedString(signingKey)
+	if err != nil {
+		return "", err
+	}
+	return signedToken, nil
 }

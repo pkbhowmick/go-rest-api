@@ -2,12 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/pkbhowmick/go-rest-api/auth"
-	"github.com/pkbhowmick/go-rest-api/model"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/pkbhowmick/go-rest-api/auth"
+	"github.com/pkbhowmick/go-rest-api/model"
 )
 
 var users map[string]model.User
@@ -206,16 +207,27 @@ func Homepage(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte(`{"status" : "OK"}`))
 }
 
+func Login(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	token, err := auth.GenerateToken("testuser")
+	if err != nil {
+		http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+		return
+	}
+	res.Write([]byte(`{"token" : "` + token + `"}`))
+}
+
 func StartServer() {
 	InitializeDB()
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", Homepage).Methods("GET")
-	router.HandleFunc("/api/users", auth.BasicAuth(GetUsers)).Methods("GET")
+	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUser).Methods("GET")
 	router.HandleFunc("/api/users", CreateUser).Methods("POST")
 	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
 	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/api/login", auth.BasicAuth(Login)).Methods("POST")
 
 	log.Println("Server is listening on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
