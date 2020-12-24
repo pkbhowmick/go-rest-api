@@ -223,9 +223,17 @@ func SetFlags(serverPort string) {
 	port = serverPort
 }
 
+func Logger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		log.Printf("%s %s%s %s", req.Method, req.Host, req.URL, req.Proto)
+		next.ServeHTTP(res, req)
+	})
+}
+
 func StartServer() {
 	InitializeDB()
 	router := mux.NewRouter().StrictSlash(true)
+	router.Use(Logger)
 
 	router.HandleFunc("/", Homepage).Methods("GET")
 	router.HandleFunc("/api/users", auth.JwtAuthentication(GetUsers)).Methods("GET")
