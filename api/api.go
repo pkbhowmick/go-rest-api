@@ -217,6 +217,12 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte(`{"token" : "` + token + `"}`))
 }
 
+var port string = "8080"
+
+func SetFlags(serverPort string) {
+	port = serverPort
+}
+
 func StartServer() {
 	InitializeDB()
 	router := mux.NewRouter().StrictSlash(true)
@@ -229,6 +235,10 @@ func StartServer() {
 	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(DeleteUser)).Methods("DELETE")
 	router.HandleFunc("/api/login", auth.BasicAuth(Login)).Methods("POST")
 
-	log.Println("Server is listening on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Println("Server is listening on port " + port)
+	server := http.Server{
+		Addr:    ":" + port,
+		Handler: router,
+	}
+	log.Fatal(server.ListenAndServe())
 }
