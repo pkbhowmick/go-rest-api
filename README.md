@@ -21,20 +21,20 @@
 - User Model
 ``````
 type User struct {
-	ID           string `json:"id"`
-	FirstName    string `json:"firstName"`
-	LastName     string `json:"lastName"`
+	ID           string       `json:"id"`
+	FirstName    string       `json:"firstName"`
+	LastName     string       `json:"lastName"`
 	Repositories []Repository `json:"repositories"`
-	CreatedAt    time.Time `json:"createdAt"`
+	CreatedAt    time.Time    `json:"createdAt"`
 }
 ``````
 - Repository Model
 ``````
 type Repository struct {
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	Visibility string `json:"visibility"`
-	Star       int    `json:"star"`
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	Visibility string    `json:"visibility"`
+	Star       int       `json:"star"`
 	CreatedAt  time.Time `json:"createdAt"`
 }
 ``````
