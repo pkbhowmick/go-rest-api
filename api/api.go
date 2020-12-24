@@ -222,11 +222,11 @@ func StartServer() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", Homepage).Methods("GET")
-	router.HandleFunc("/api/users", GetUsers).Methods("GET")
-	router.HandleFunc("/api/users/{id}", GetUser).Methods("GET")
-	router.HandleFunc("/api/users", CreateUser).Methods("POST")
-	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
-	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/api/users", auth.JwtAuthentication(GetUsers)).Methods("GET")
+	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(GetUser)).Methods("GET")
+	router.HandleFunc("/api/users", auth.JwtAuthentication(CreateUser)).Methods("POST")
+	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(UpdateUser)).Methods("PUT")
+	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(DeleteUser)).Methods("DELETE")
 	router.HandleFunc("/api/login", auth.BasicAuth(Login)).Methods("POST")
 
 	log.Println("Server is listening on port 8080")
