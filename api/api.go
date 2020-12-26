@@ -13,6 +13,8 @@ import (
 
 var users map[string]model.User
 
+var router = mux.NewRouter()
+
 func InitializeDB() {
 	users = make(map[string]model.User)
 	users["1"] = model.User{
@@ -211,7 +213,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	token, err := auth.GenerateToken("testuser")
 	if err != nil {
-		http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+		http.Error(res, "Wrong username or password!", http.StatusUnauthorized)
 		return
 	}
 	res.Write([]byte(`{"token" : "` + token + `"}`))
@@ -230,9 +232,8 @@ func Logger(next http.Handler) http.Handler {
 	})
 }
 
-func StartServer() {
+func Init()  {
 	InitializeDB()
-	router := mux.NewRouter().StrictSlash(true)
 	router.Use(Logger)
 
 	router.HandleFunc("/", Homepage).Methods("GET")
@@ -242,7 +243,10 @@ func StartServer() {
 	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(UpdateUser)).Methods("PUT")
 	router.HandleFunc("/api/users/{id}", auth.JwtAuthentication(DeleteUser)).Methods("DELETE")
 	router.HandleFunc("/api/login", auth.BasicAuth(Login)).Methods("POST")
+}
 
+func StartServer() {
+	Init()
 	log.Println("Server is listening on port " + port)
 	server := http.Server{
 		Addr:    ":" + port,
