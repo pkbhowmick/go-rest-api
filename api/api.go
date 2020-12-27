@@ -220,9 +220,11 @@ func Login(res http.ResponseWriter, req *http.Request) {
 }
 
 var port string = "8080"
+var authStatus bool = true
 
-func SetFlags(serverPort string) {
+func SetFlags(serverPort string, auth bool) {
 	port = serverPort
+	authStatus = auth
 }
 
 func Logger(next http.Handler) http.Handler {
@@ -235,8 +237,9 @@ func Logger(next http.Handler) http.Handler {
 func Init() {
 	InitializeDB()
 	router.Use(Logger)
-	router.Use(auth.Authentication)
-
+	if authStatus {
+		router.Use(auth.Authentication)
+	}
 	router.HandleFunc("/", Homepage).Methods("GET")
 	router.HandleFunc("/api/users", GetUsers).Methods("GET")
 	router.HandleFunc("/api/users/{id}", GetUser).Methods("GET")
