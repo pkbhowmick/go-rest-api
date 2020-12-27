@@ -232,7 +232,7 @@ func Logger(next http.Handler) http.Handler {
 	})
 }
 
-func Init()  {
+func Init() {
 	InitializeDB()
 	router.Use(Logger)
 
