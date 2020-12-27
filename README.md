@@ -1,6 +1,8 @@
 # REST API Server in Golang
 
 - This API server provides endpoints to create,read,update & delete users and their repositories (like Github).
+  
+[![Go Report Card](https://goreportcard.com/badge/github.com/pkbhowmick/go-rest-api)](https://goreportcard.com/report/github.com/pkbhowmick/go-rest-api)
 
 ## To Start API Server
 ```$ git clone https://github.com/pkbhowmick/go-rest-api.git```
