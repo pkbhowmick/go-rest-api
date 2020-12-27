@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gorilla/mux"
 	"github.com/magiconair/properties/assert"
 )
 
@@ -71,6 +72,9 @@ func TestDeleteUser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		params := make(map[string]string)
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
 		token, err := auth.GenerateToken("test")
 		if err != nil {
 			t.Fatal(err)
@@ -94,6 +98,9 @@ func TestGetUser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		params := make(map[string]string)
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
 		token, err := auth.GenerateToken("test")
 		if err != nil {
 			t.Fatal(err)
@@ -158,6 +165,9 @@ func TestUpdateUser(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		params := make(map[string]string)
+		params["id"] = test.UserID
+		req = mux.SetURLVars(req, params)
 		token, err := auth.GenerateToken("test")
 		if err != nil {
 			t.Fatal(err)
