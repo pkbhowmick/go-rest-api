@@ -11,34 +11,48 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func BasicAuth(next http.HandlerFunc) http.HandlerFunc {
-	return func(res http.ResponseWriter, req *http.Request) {
+func Authentication(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		authHeader := req.Header.Get("Authorization")
 		authStr := strings.Split(authHeader, " ")
-		if len(authStr) < 2 || authStr[0] != "Basic" {
+		if len(authStr)==2 && authStr[0]=="Basic" {
+			err := BasicAuth(authHeader)
+			if err != nil {
+				http.Error(res, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+			next.ServeHTTP(res,req)
+		}else if len(authStr)==2 && authStr[0]=="Bearer" {
+			err := JwtAuthentication(authHeader)
+			if err != nil {
+				http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+				return
+			}
+			next.ServeHTTP(res,req)
+		}else {
 			http.Error(res, "Unauthorized", http.StatusUnauthorized)
-			return
 		}
+	})
+}
+
+func BasicAuth(authHeader string) error {
+		authStr := strings.Split(authHeader, " ")
 		decodedStr, err := base64.StdEncoding.DecodeString(authStr[1])
 		if err != nil {
-			http.Error(res, "Unauthorized", http.StatusUnauthorized)
-			return
+			return errors.New("invalid authorization header")
 		}
 		temp := string(decodedStr)
 		userAuth := strings.Split(temp, ":")
 		if len(userAuth) != 2 {
-			http.Error(res, "Unauthorized", http.StatusUnauthorized)
-			return
+			return errors.New("invalid authorization header")
 		}
 		username := userAuth[0]
 		password := userAuth[1]
 
 		if username != os.Getenv("ADMIN_USER") || password != os.Getenv("ADMIN_PASS") {
-			http.Error(res, "Unauthorized", http.StatusUnauthorized)
-			return
+			return errors.New("wrong username or password")
 		}
-		next.ServeHTTP(res, req)
-	}
+		return nil
 }
 
 func GenerateToken(userID string) (string, error) {
@@ -55,18 +69,8 @@ func GenerateToken(userID string) (string, error) {
 	return signedToken, nil
 }
 
-func JwtAuthentication(next http.HandlerFunc) http.HandlerFunc {
-	return func(res http.ResponseWriter, req *http.Request) {
-		authHeader := req.Header.Get("Authorization")
-		if len(authHeader) == 0 {
-			http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
-			return
-		}
+func JwtAuthentication(authHeader string) error {
 		authStr := strings.Split(authHeader, " ")
-		if len(authStr) < 2 || authStr[0] != "Bearer" {
-			http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
-			return
-		}
 		tokenString := authStr[1]
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -75,14 +79,12 @@ func JwtAuthentication(next http.HandlerFunc) http.HandlerFunc {
 			return []byte(os.Getenv("SIGNING_KEY")), nil
 		})
 		if err != nil {
-			http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+			return err
 		} else if _, ok := err.(*jwt.ValidationError); ok {
-			http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+			return errors.New("access token is missing or invalid")
 		} else if token.Valid {
-			next.ServeHTTP(res, req)
+			return nil
 		} else {
-			http.Error(res, "Access token is missing or invalid", http.StatusUnauthorized)
+			return errors.New("access token is missing or invalid")
 		}
-
-	}
 }
