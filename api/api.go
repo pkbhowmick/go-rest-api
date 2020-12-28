@@ -106,6 +106,7 @@ func GetUsers(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	allUsers := userToArray()
 	err := json.NewEncoder(res).Encode(allUsers)
+	res.WriteHeader(http.StatusOK)
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
@@ -117,6 +118,7 @@ func GetUser(res http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	id := params["id"]
 	if user, ok := users[id]; ok {
+		res.WriteHeader(http.StatusOK)
 		err := json.NewEncoder(res).Encode(user)
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
@@ -183,6 +185,7 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 	oldUser.LastName = newUser.LastName
 	users[id] = oldUser
 	err = json.NewEncoder(res).Encode(&oldUser)
+	res.WriteHeader(http.StatusOK)
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
@@ -196,6 +199,7 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 	if user, ok := users[id]; ok {
 		delete(users, id)
 		err := json.NewEncoder(res).Encode(&user)
+		res.WriteHeader(http.StatusOK)
 		if err != nil {
 			http.Error(res, err.Error(), http.StatusInternalServerError)
 		}
@@ -216,6 +220,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Wrong username or password!", http.StatusUnauthorized)
 		return
 	}
+	res.WriteHeader(http.StatusOK)
 	res.Write([]byte(`{"token" : "` + token + `"}`))
 }
 
