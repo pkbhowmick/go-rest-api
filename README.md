@@ -46,8 +46,17 @@ type Repository struct {
 |  Method | API Endpoint  | Authentication Type | Description |
 |---|---|---|---|
 |POST| /api/login | Basic | Return jwt token in response for successful authentication
-|GET| /api/users | Bearer | Return a list of all users in response| 
-|GET| /api/users/{id} | Bearer| Return the data of given user id in response| 
-|POST| /api/users | Bearer |Add an user in the database and return the added user data in response | 
-|PUT| /api/users/{id} | Bearer |Update the user and return the updated user info in response| 
-|DELETE| /api/users/{id} | Bearer |Delete the user and return the deleted user data in response| 
+|GET| /api/users | Basic or Bearer token | Return a list of all users in response| 
+|GET| /api/users/{id} | Basic or Bearer token| Return the data of given user id in response| 
+|POST| /api/users | Basic or Bearer token |Add an user in the database and return the added user data in response | 
+|PUT| /api/users/{id} | Basic or Bearer token |Update the user and return the updated user info in response| 
+|DELETE| /api/users/{id} | Basic or Bearer token |Delete the user and return the deleted user data in response| 
+
+## Available Flags
+
+| Flag | Shorthand | Default value | Example | Description
+|---|---|---|---|---|
+|port|p|8080| go-rest-api start --port=8090 | Start API server in the given port otherwise in default port
+|auth|a|true| go-rest-api start --auth=false | If true impose authentication on API server otherwise bypass it
+
+
