@@ -29,7 +29,7 @@ $ docker run -p 8080:8080 <given_image_name> start -a=false # to start the serve
 ```shell
 $ docker pull pkbhowmick/go-rest-api
 $ docker run -p 8080:8080 pkbhowmick/go-rest-api # to start the server with default config
-$ docker run -p 8080:8080 pkbhowmick/go-rest-api -a=false # to start the server without authentication
+$ docker run -p 8080:8080 pkbhowmick/go-rest-api start -a=false # to start the server without authentication
 ```
 
 
