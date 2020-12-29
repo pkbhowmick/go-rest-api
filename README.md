@@ -18,6 +18,21 @@
 
 ```$ go test```
 
+## Commands to run API server in docker container
+```shell
+$ docker build -t <image_name> .
+$ docker run -p 8080:8080 <given_image_name> # to start the server with default config
+$ docker run -p 8080:8080 <given_image_name> start -a=false # to start the server without authentication
+```
+
+## Commands to pull image from docker hub and run locally
+```shell
+$ docker pull pkbhowmick/go-rest-api
+$ docker run -p 8080:8080 pkbhowmick/go-rest-api # to start the server with default config
+$ docker run -p 8080:8080 pkbhowmick/go-rest-api -a=false # to start the server without authentication
+```
+
+
 ## Data Model
 
 - User Model
