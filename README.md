@@ -52,7 +52,6 @@ type Repository struct {
 	Name       string    `json:"name"`
 	Visibility string    `json:"visibility"`
 	Star       int       `json:"star"`
-	CreatedAt  time.Time `json:"createdAt"`
 }
 ``````
 
