@@ -3,11 +3,12 @@ package api
 import (
 	"bytes"
 	"fmt"
-	"github.com/pkbhowmick/go-rest-api/auth"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/pkbhowmick/go-rest-api/auth"
 
 	"github.com/magiconair/properties/assert"
 )
@@ -33,7 +34,30 @@ func TestCreateUser(t *testing.T) {
 		{
 			"POST",
 			"/api/users",
-			bytes.NewReader([]byte(`{"id": "6","firstName": "test","lastName": "test"}`)),
+			bytes.NewReader([]byte(`{
+    "id": "6",
+    "firstName": "test",
+    "lastName": "test",
+    "repositories": [
+        {
+            "id": "10006",
+            "name": "http-server",
+            "visibility": "public",
+            "star": 10
+        }
+    ]
+}`)),
+			201,
+		},
+		{
+			"POST",
+			"/api/users",
+			bytes.NewReader([]byte(`{
+    "id": "7",
+    "firstName": "test",
+    "lastName": "test",
+    "repositories": []
+}`)),
 			201,
 		},
 		{
@@ -63,6 +87,7 @@ func TestDeleteUser(t *testing.T) {
 	Init()
 	tests := []TestWithID{
 		{"DELETE", "/api/users/%s", nil, 200, "1"},
+		{"DELETE", "/api/users/%s", nil, 404, "1"},
 		{"DELETE", "/api/users/%s", nil, 404, "6"},
 	}
 	for _, test := range tests {
@@ -87,6 +112,7 @@ func TestGetUser(t *testing.T) {
 	tests := []TestWithID{
 		{"GET", "/api/users/%s", nil, 200, "1"},
 		{"GET", "/api/users/%s", nil, 404, "8"},
+		{"GET", "/api/users/%s", nil, 200, "5"},
 	}
 	for _, test := range tests {
 		url := fmt.Sprintf(test.Url, test.UserID)
@@ -139,14 +165,23 @@ func TestUpdateUser(t *testing.T) {
 		{
 			"PUT",
 			"/api/users/%s",
-			bytes.NewReader([]byte(`{"firstName": "test","lastName": "test"}`)),
-			404,
-			"10",
+			bytes.NewReader([]byte(`{"firstName": "test",
+    "lastName": "test",
+    "repositories": [
+        {
+            "id": "10006",
+            "name": "http-server",
+            "visibility": "public",
+            "star": 10
+        }
+    ]}`)),
+			200,
+			"5",
 		},
 		{
 			"PUT",
 			"/api/users/%s",
-			bytes.NewReader([]byte(`"firstName": "test","lastName": "test"`)),
+			bytes.NewReader([]byte(``)),
 			400,
 			"2",
 		},
