@@ -175,6 +175,7 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
+	newUser.ID = oldUser.ID
 	newUser.CreatedAt = oldUser.CreatedAt
 	users[oldUser.ID] = newUser
 	err = json.NewEncoder(res).Encode(&newUser)
