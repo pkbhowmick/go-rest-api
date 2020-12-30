@@ -27,7 +27,6 @@ func InitializeDB() {
 				"go-rest-api",
 				"public",
 				1,
-				time.Now(),
 			},
 		},
 		time.Now(),
@@ -42,7 +41,6 @@ func InitializeDB() {
 				"go-api-server",
 				"public",
 				2,
-				time.Now(),
 			},
 		},
 		time.Now(),
@@ -57,7 +55,6 @@ func InitializeDB() {
 				"go-http-api-server",
 				"private",
 				3,
-				time.Now(),
 			},
 		},
 		time.Now(),
@@ -72,7 +69,6 @@ func InitializeDB() {
 				"go-httpapi-server",
 				"private",
 				5,
-				time.Now(),
 			},
 		},
 		time.Now(),
@@ -87,7 +83,6 @@ func InitializeDB() {
 				"go-http-server",
 				"public",
 				5,
-				time.Now(),
 			},
 		},
 		time.Now(),
@@ -151,7 +146,6 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	user.CreatedAt = time.Now()
-	user.Repositories = make([]model.Repository, 0)
 	users[user.ID] = user
 	res.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(res).Encode(&user)
@@ -181,10 +175,9 @@ func UpdateUser(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
-	oldUser.FirstName = newUser.FirstName
-	oldUser.LastName = newUser.LastName
-	users[id] = oldUser
-	err = json.NewEncoder(res).Encode(&oldUser)
+	newUser.CreatedAt = oldUser.CreatedAt
+	users[oldUser.ID] = newUser
+	err = json.NewEncoder(res).Encode(&newUser)
 	res.WriteHeader(http.StatusOK)
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusInternalServerError)
