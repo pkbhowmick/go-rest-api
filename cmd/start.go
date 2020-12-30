@@ -19,7 +19,7 @@ var startCmd = &cobra.Command{
 	Short: "This command will start the api server",
 	Long:  "This command will start the go-rest-api server",
 	Run: func(cmd *cobra.Command, args []string) {
-		api.SetFlags(port,auth)
+		api.SetFlags(port, auth)
 		api.StartServer()
 	},
 }
