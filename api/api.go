@@ -147,7 +147,7 @@ func CreateUser(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if _, ok := users[user.ID]; ok {
-		http.Error(res, "User with given ID already exist", http.StatusBadRequest)
+		http.Error(res, "User with given ID already exist", http.StatusConflict)
 		return
 	}
 	user.CreatedAt = time.Now()
