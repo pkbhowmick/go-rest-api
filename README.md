@@ -73,6 +73,15 @@ type Repository struct {
 |port|p|8080| go-rest-api start --port=8090 | Start API server in the given port otherwise in default port
 |auth|a|true| go-rest-api start --auth=false | If true impose authentication on API server otherwise bypass it
 
+## Environment Variables
+
+| Name | Default(in docker image) | Description
+|---|---|---|
+ADMIN_USER | admin | API server admin username
+ADMIN_PASS | demo | API server admin password
+SIGNING_KEY | veryverysecretkey | API server jwt token signing key
+
+
 ## Sample Curl commands without authentication
 
 Run API server without authentication
