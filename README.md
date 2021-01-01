@@ -11,7 +11,9 @@
 
 ```$ go install```
 
-```$ go-rest-api start```
+```$ go-rest-api version``` [print the version of the api server]
+
+```$ go-rest-api start```  [run the api server]
 
 ## Command to run unit test for API endpoints
 ```$ cd api```
