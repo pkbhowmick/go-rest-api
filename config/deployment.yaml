@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-server-deployment
+  labels:
+    app: go-rest-api
 spec:
   selector:
     matchLabels:
