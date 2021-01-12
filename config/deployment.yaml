@@ -17,5 +17,8 @@ spec:
       containers:
         - name: go-rest-api
           image: pkbhowmick/go-rest-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
+
+
