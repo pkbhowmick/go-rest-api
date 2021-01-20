@@ -4,7 +4,7 @@ metadata:
   name: api-server-ingress
 spec:
   rules:
-  - host: api.github.com
+  - host: api.github.local
     http:
       paths:
       - path: /
