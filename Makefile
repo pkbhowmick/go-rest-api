@@ -4,9 +4,8 @@ all: build-binary build-image push
 
 
 TAG ?= 2.0.1
-REGISTRY ?= registry.hub.docker.com
+REGISTRY ?= pkbhowmick
 APP_NAME ?= go-rest-api
-DOCKER_REPO ?= pkbhowmick
 RELEASE_NAME ?= go-api-server
 
 
@@ -17,12 +16,12 @@ build-binary:
 
 build-image: build-binary
 	@echo Building the API Server Project ...
-	docker build -t ${DOCKER_REPO}/${APP_NAME}:${TAG} .
+	docker build -t ${REGISTRY}/${APP_NAME}:${TAG} .
 
 
 push: build-image
 	@echo Pushing the Image into ${REGISTRY}
-	docker push ${DOCKER_REPO}/${APP_NAME}:${TAG}
+	docker push ${REGISTRY}/${APP_NAME}:${TAG}
 
 
 install:
