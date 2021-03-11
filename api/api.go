@@ -18,6 +18,14 @@ var users map[string]model.User
 var router = mux.NewRouter()
 
 var (
+	version = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "version",
+		Help: "version information about this binary",
+		ConstLabels: map[string]string{
+			"version": "v0.1.0",
+		},
+	})
+
 	httpRequestsTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "http_requests_total",
 		Help: "Count of http requests",
@@ -214,6 +222,7 @@ func DeleteUser(res http.ResponseWriter, req *http.Request) {
 func Homepage(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	res.Write([]byte(`{"status" : "OK"}`))
+	httpRequestsTotal.With(prometheus.Labels{"method": "POST", "code": "200"}).Inc()
 }
 
 func Login(res http.ResponseWriter, req *http.Request) {
@@ -250,6 +259,7 @@ func Init() {
 	}
 	r := prometheus.NewRegistry()
 	r.MustRegister(httpRequestsTotal)
+	r.MustRegister(version)
 	router.HandleFunc("/", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(Homepage))).Methods("GET")
 	router.HandleFunc("/api/users", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(GetUsers))).Methods("GET")
 	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(GetUser))).Methods("GET")
@@ -257,7 +267,7 @@ func Init() {
 	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(UpdateUser))).Methods("PUT")
 	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(DeleteUser))).Methods("DELETE")
 	router.HandleFunc("/api/login", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(Login))).Methods("POST")
-	router.HandleFunc("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
+	router.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{})).Methods(http.MethodGet)
 }
 
 func StartServer() {
