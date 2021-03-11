@@ -12,6 +12,10 @@ import (
 
 func Authentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if (*req.URL).String() == "/metrics" {
+			next.ServeHTTP(res, req)
+			return
+		}
 		authHeader := req.Header.Get("Authorization")
 		authStr := strings.Split(authHeader, " ")
 		if len(authStr) == 2 && authStr[0] == "Basic" {
