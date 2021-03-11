@@ -9,11 +9,20 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkbhowmick/go-rest-api/auth"
 	"github.com/pkbhowmick/go-rest-api/model"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var users map[string]model.User
 
 var router = mux.NewRouter()
+
+var (
+	httpRequestsTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "http_requests_total",
+		Help: "Count of http requests",
+	}, []string{"code", "method"})
+)
 
 func InitializeDB() {
 	users = make(map[string]model.User)
@@ -239,13 +248,16 @@ func Init() {
 	if authStatus {
 		router.Use(auth.Authentication)
 	}
-	router.HandleFunc("/", Homepage).Methods("GET")
-	router.HandleFunc("/api/users", GetUsers).Methods("GET")
-	router.HandleFunc("/api/users/{id}", GetUser).Methods("GET")
-	router.HandleFunc("/api/users", CreateUser).Methods("POST")
-	router.HandleFunc("/api/users/{id}", UpdateUser).Methods("PUT")
-	router.HandleFunc("/api/users/{id}", DeleteUser).Methods("DELETE")
-	router.HandleFunc("/api/login", Login).Methods("POST")
+	r := prometheus.NewRegistry()
+	r.MustRegister(httpRequestsTotal)
+	router.HandleFunc("/", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(Homepage))).Methods("GET")
+	router.HandleFunc("/api/users", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(GetUsers))).Methods("GET")
+	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(GetUser))).Methods("GET")
+	router.HandleFunc("/api/users", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(CreateUser))).Methods("POST")
+	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(UpdateUser))).Methods("PUT")
+	router.HandleFunc("/api/users/{id}", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(DeleteUser))).Methods("DELETE")
+	router.HandleFunc("/api/login", promhttp.InstrumentHandlerCounter(httpRequestsTotal, http.HandlerFunc(Login))).Methods("POST")
+	router.HandleFunc("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 }
 
 func StartServer() {

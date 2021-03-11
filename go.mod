@@ -6,5 +6,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/magiconair/properties v1.8.1
+	github.com/prometheus/client_golang v0.9.3
 	github.com/spf13/cobra v1.1.1
 )
